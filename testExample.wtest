@@ -1,9 +1,102 @@
-import example.pepita
+import actividades.*
+import socios.*
 
-describe "group of tests for pepita" {
+describe "test excursion a ciudad" {
 
-  test "pepita has initial energy" {
-    assert.equals(100, pepita.energy())
+  const excursionCiudad1 = new ExcursionACiudad(idiomas=["español","ingles"], cantidadAtracciones=4)
+  const excursionTropical1 = new ExcursionTropical(idiomas=["español","italiano"], cantidadAtracciones=4)
+  const excursionCiudad2 = new ExcursionACiudad(idiomas=["español","ingles"], cantidadAtracciones=8)
+  const excursionTropical2 = new ExcursionTropical(idiomas=["español","italiano"], cantidadAtracciones=8)
+  const excursionTropical3 = new ExcursionTropical(idiomas=["español","italiano"], cantidadAtracciones=10)
+
+  test "excursionCiudad1 lleva 2 días, no implica esfuerzo, y no sirve para broncearse." {
+    assert.equals(2, excursionCiudad1.dias())
+    assert.notThat(excursionCiudad1.implicaEsfuerzo())
+    assert.notThat(excursionCiudad1.sirveParaBroncearse())
   }
 
+  test "excursionTropical1 lleva 3 días, no implica esfuerzo, y sí sirve para broncearse." {
+    assert.equals(3, excursionTropical1.dias())
+    assert.notThat(excursionTropical1.implicaEsfuerzo())
+    assert.that(excursionTropical1.sirveParaBroncearse())
+  }
+
+  test "excursionCiudad2 lleva 4 días, implica esfuerzo, y no sirve para broncearse." {
+    assert.equals(4, excursionCiudad2.dias())
+    assert.that(excursionCiudad2.implicaEsfuerzo())
+    assert.notThat(excursionCiudad2.sirveParaBroncearse())
+  }
+
+  test "excursionTropical2 lleva 5 días, implica esfuerzo, y sirve para broncearse." {
+    assert.equals(5, excursionTropical2.dias())
+    assert.that(excursionTropical2.implicaEsfuerzo())
+    assert.that(excursionTropical2.sirveParaBroncearse())
+  }
+
+  test "excursionTropical3 lleva 6 días, no implica esfuerzo, y sí sirve para broncearse." {
+    assert.equals(6, excursionTropical3.dias())
+    assert.notThat(excursionTropical3.implicaEsfuerzo())
+    assert.that(excursionTropical3.sirveParaBroncearse())
+  }
 }
+
+describe "test trekking" {
+
+  const trek1 = new SalidaDeTrekking(kms=100, diasDeSol=130, idiomas=#{"ingles"})
+  const trek2 = new SalidaDeTrekking(kms=50, diasDeSol=240, idiomas=#{"ingles"})
+  const trek3 = new SalidaDeTrekking(kms=250, diasDeSol=130, idiomas=#{"ingles"})
+
+  test "trek1 lleva 2 días" {
+    assert.equals(2, trek1.dias())
+  }
+
+  test "trek2 lleva 1 días" {
+    assert.equals(1, trek2.dias())
+  }
+
+  test "trek3 lleva 5 días" {
+    assert.equals(5, trek3.dias())
+  }
+
+  test "trek1 implica esfuerzo" {
+    assert.that(trek1.implicaEsfuerzo())
+  }
+}
+
+describe "test roque" {
+
+  const playa1 = new ViajeDePlaya(largo=1000, idiomas=#{"jeringozo"})
+  const playa2 = new ViajeDePlaya(largo=2000, idiomas=#{"esperanto"})
+  const gim1 = new ClaseDeGimnasia()
+  const roque = new SocioTranquilo(maximoActividades=2, edad=40, idiomas=#{"español"})
+  const ana = new SocioTranquilo(maximoActividades=3, edad=30, idiomas=#{"italiano"})
+
+  method initialize() {
+    roque.registrarActividad(playa1)
+    roque.registrarActividad(playa2)
+    ana.registrarActividad(playa1)
+    ana.registrarActividad(playa2)
+    ana.registrarActividad(gim1)
+  }
+
+  test "roque es adorador del sol" {
+    assert.that(roque.esAdoradorDelSol())
+  }
+
+  test "las activides esforzadas es solo el viaje de 2000 metros" {
+    assert.equals([playa2], roque.actividadesEsforzadas())
+  }
+
+  test "roque no puede hacer gim porque ya hizo sus 2 actividad máximas" {
+    assert.throwsExceptionWithMessage("el socio alcanzó el máximo de actividades", {roque.registrarActividad(gim1)})
+  }
+
+  test "ana ya no es adoradora del sol" {
+    assert.notThat(ana.esAdoradorDelSol())
+  }
+
+  test "las actividades esforzadas de ana son el viaje de 2000 metros y la clase de gim" {
+    assert.equals([playa2, gim1], ana.actividadesEsforzadas())
+  }
+}
+  
